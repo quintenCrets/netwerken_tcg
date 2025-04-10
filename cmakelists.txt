@@ -1,0 +1,41 @@
+cmake_minimum_required( VERSION 3.10 )
+set( cmake_cxx_standard_required 17 )
+project( tcg_testing )
+
+add_compile_definitions(
+	DEBUG=true
+	ZMQ_STATIC
+)
+
+include_directories(
+	"C:\\Program\ Files\ (x86)\\ZeroMQ\\include\\"
+)
+
+link_directories(
+	"C:\\Program\ Files\ (x86)\\ZeroMQ\\lib\\" 
+)
+
+set(project_headers
+	sources/file_names.hpp
+	sources/network.hpp
+	sources/player.hpp
+	sources/runtime_functions.hpp
+)
+
+set(project_sources
+	sources/file_names.cpp
+	sources/main.cpp
+	sources/network.cpp
+	sources/player.cpp
+	sources/runtime_functions.cpp
+)
+
+set(ALL_LIBS
+	libzmq.a
+	ws2_32
+	iphlpapi
+	pthread
+)
+
+add_executable(${PROJECT_NAME} ${project_sources} ${project_headers})
+target_link_libraries( ${PROJECT_NAME} ${ALL_LIBS})
