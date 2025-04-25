@@ -51,4 +51,8 @@ CMakeUserPresets.json
 .history
 .ionide
 
+# exclude the player files
+files/players/
+files/players/*
+
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,executable,cmake

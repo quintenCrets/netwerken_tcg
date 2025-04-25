@@ -84,15 +84,27 @@ runtime::GENERAL_COMMAND_STATES runtime::handle_general_commands()
 
 void runtime::handle_user_commands()
 {
+    std::string username = benthernet->tokenized_receive_data.at( 0 );
     std::string user_command = benthernet->tokenized_receive_data.at( 1 );
-    //case help
+
     if ( user_command == "help" )
     {
         benthernet->tokenized_send_data.push_back( "message received" );
     }
-    if ( user_command == "gather mana" )
+    else if ( user_command == "gather mana" )
     {
         benthernet->tokenized_send_data.push_back( "mana + 1" );
+    }
+    else if ( user_command == "get mana count" )
+    {
+        for ( player * player : all_active_players )
+        {
+            if ( player->get_user_name() == username )
+            {
+                
+                benthernet->tokenized_send_data.push_back( "you have " + std::to_string( player->get_mana_count() ) + " mana!" );
+            }
+        }
     }
     //invalid argument case
     else

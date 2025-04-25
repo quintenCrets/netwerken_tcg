@@ -10,13 +10,13 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include "file_names.hpp"
+#include "file_functions/file_names.hpp"
 #include "network.hpp"
 #include "player.hpp"
 
 class runtime
 {
-    public:
+    private:
         typedef enum GENERAL_COMMAND_STATES
         {
             NO_COMMAND_STATE,
@@ -25,11 +25,6 @@ class runtime
             ERROR_STATE
         } GENERAL_COMMAND_STATES;
         
-        runtime() {};
-        ~runtime();
-
-        void run();
-    private:
         file_names *card_files;
         file_names *all_player_files;
         network *benthernet;
@@ -41,6 +36,11 @@ class runtime
         void new_signup( std::string user_name_to_add );
         bool user_name_exists( std::string user_name );
         bool user_already_active( std::string user_name_to_check );
+    public:    
+        runtime() {};
+        ~runtime();
+
+        void run();
 };
 
 #endif

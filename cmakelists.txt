@@ -16,14 +16,16 @@ link_directories(
 )
 
 set(project_headers
-	sources/file_names.hpp
+	sources/file_functions/file_names.hpp
+	sources/file_functions/json.h
 	sources/network.hpp
 	sources/player.hpp
 	sources/runtime_functions.hpp
 )
 
 set(project_sources
-	sources/file_names.cpp
+	sources/file_functions/file_names.cpp
+	sources/file_functions/json.cpp
 	sources/main.cpp
 	sources/network.cpp
 	sources/player.cpp
