@@ -22,6 +22,7 @@ class runtime
             NO_COMMAND_STATE,
             LOGIN_STATE,
             SIGNUP_STATE,
+            HELP_STATE,
             ERROR_STATE
         } GENERAL_COMMAND_STATES;
         

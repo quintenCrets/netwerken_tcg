@@ -25,12 +25,6 @@ void runtime::run()
         if ( general_command_state == NO_COMMAND_STATE )
             handle_user_commands();
 
-
-        #if DEBUG
-            for ( std::string s : benthernet->tokenized_send_data )
-                std::cout << "send tokens: " << s << "\n\r";
-        #endif
-
         //send data and clear buffers
         benthernet->push_tokenized_send_data();
         benthernet->tokenized_receive_data.clear();
@@ -65,7 +59,12 @@ runtime::GENERAL_COMMAND_STATES runtime::handle_general_commands()
         all_player_files->update_all_file_names();
         return SIGNUP_STATE;
     }
-    
+    else if ( supposed_general_command == "help" )
+    {
+        benthernet->tokenized_send_data.push_back( "help" );
+        benthernet->tokenized_send_data.push_back( "List of all the possible general command's:\n -login>(username)\n -signup>(username)\n -help\n" );
+        return HELP_STATE;
+    }
     //if supposed_general_command isn't a general command used in the previous checks, continue to use it as a username
     else
     {
@@ -76,10 +75,21 @@ runtime::GENERAL_COMMAND_STATES runtime::handle_general_commands()
             benthernet->tokenized_send_data.push_back( "non existing username" );
             return ERROR_STATE;
         }
+        
+        for ( player * player : all_active_players )
+        {
+            if ( supposed_general_command == player->get_user_name() )
+            {
+                return NO_COMMAND_STATE; // the supposed_general_command is the username of an active player
+            }
+        }
+
+        benthernet->tokenized_send_data.push_back( "not yet logged in, use \"login>\" first" );
+        return ERROR_STATE;
     }
 
-    //previous checks determind that there wasn't a general command, and the username used instead is valid
-    return NO_COMMAND_STATE;
+    //something dire went wrong
+    return ERROR_STATE;
 }
 
 void runtime::handle_user_commands()

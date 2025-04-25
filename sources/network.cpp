@@ -101,7 +101,7 @@ void network::safe_receive( std::vector<std::string> *message_list )
         tokenize_benthernet_base_string( data_base_str );
 
         //check if the tokenized data is conform the expected message
-        if ( this->tokenized_message_list.size() >= 2 )
+        if ( this->tokenized_message_list.size() >= 1 )
         {
             message_list->clear();
             *message_list = this->tokenized_message_list;
@@ -109,7 +109,7 @@ void network::safe_receive( std::vector<std::string> *message_list )
         }
 
         //error scenario
-        this->send_string( ">invalide command, use more arguments instead" );
+        this->send_string( ">invalide command, try using \"tcg?>help>\" instead" );
     }
     
 
