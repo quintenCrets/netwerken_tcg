@@ -18,6 +18,24 @@ Players need to be carefull though, as they can be attacked by other players at 
 
 ## Service calls over benthernet
 
+### Basic message construction
+
+All messages used by the service and the clients are constructed the same way, and listed below.
+
+```
+- benternet token>
+- general command token>
+- ( username token / extra token )>
+- ( action token / response )>
+
+examples:
+    "tcg?>action>quinten>get max mana>"
+    "tcg!>signup>quinten>succesfully signed up>"
+    "tcg?>help>"
+```
+
+Each type of token will be discussed seperatly.
+
 ### Benthernet token
 
 To make sure no mixing between receiving and sending messages happens, the service will always expect to receive a specific benthernet token.
@@ -27,48 +45,49 @@ When sending a request: "tcg?>"
 When returning a response: "tcg!>"
 ```
 
-### General commands
+### General command token
 
-Some commands like logging in and getting a list of all active players are the same for all players. These functions are called general commands.
+The first token after the benthernet token is always the general command token. It is used to decide what the service needs to do, or what type of response the service has send.
 
-The general commands are constructed as listed below. Also listed below is a list of all the possible general_command token's ( this is the same list when a user uses  the "tcg?>help>" general command)
-
-```
--benternet token       
--general_command token 
--( extra token's )
-->
-
-list  of all general command's:
-    - login>(username)>
-    - signup>(username)>
-    - help>
-```
-
-### user specific commands
-
-Most of the commands however are user specific. For example if a user want's to use mana, the service must know which user's mana to use.
-
-Listed below is the way a user can construct messages that the service will use to manage the players mana_count, cards, tools, lifepoints, ... also listed below are all the commands users can use.
+Listed below is a list of all the possible general command token's ( this is the same list when a user uses the "tcg?>help>" general command )
 
 ```
-- benternet token
-- user_name token
-- action token       
-- ( extra token's )
-- >
-
-list of all user specific command's:
-    -(username)>help>
-    -(username)>get mana count>
-    -(username)>get max mana>
-    -(username)>gather mana>
-
+list  of all general command tokens:
+    - signup>   used to register a new account
+    - action>   used to perform a player specific action
+    - list>     lists all active players
+    - help>     prints out a helpfull quick start in game
 ```
 
-If an invalid user is used, for example the user is called "quinten" but tries using "quinte" the service will return a general command telling the "wrong user name" that they used an invalid username. 
+### Username token
 
-!!! All player's that aren't loged in will also receive this message. !!!
+Very straight forward, this token is used to determine which user used the command. It can be used to login to a certain account or perform an action on the logged in account.
+
+### Extra token
+
+Most of the commands however are user specific. After the username is inputted the service will expect the extra token to be this command. Listed below are all possible commands to be used.
+
+```
+- action>(username)>(extra)>
+
+list of all possible extra tokens:
+    - get mana count        get a players mana count
+    - get max mana          get the maximum amount of mana a player can have
+    - gather mana           gather more mana if possible
+    - search card           use mana to search for a new card
+    - play card>(name)      use mana the card named in the next token
+    - list cards            gives a list of all cards a player has
+
+examples:
+    "tcg?>action>quinten>get max mana>"
+    "tcg?>action>quinten>search card>"
+```
+
+If an invalid username is used, for example the user is called "quinten" but tries using "quinte" the service will return an error message that a "wrong username" was used. 
+
+## Flow chart
+
+TODO
 
 ## Examples
 
@@ -76,13 +95,18 @@ If an invalid user is used, for example the user is called "quinten" but tries u
 
 ```
 tcg?>signup>quinten>
-    tcg!>quinten>succesfull signup>
-tcg?>quinten>get mana count>
-    tcg!>quinten>not yet logged in, use "login>" first>
-tcg?>login>quinte>
-    tcg!>login>not a valid username>
-tcg?>login>quinten>
-    tcg!>quinten>succesfull login>
+
+    tcg!>signup>quinten>succesfull signup>
+
+tcg?>action>quinte>get mana count>
+
+    tcg!>action>quinte>not a valid username>
+
+tcg?>action>quinten>get mana count>
+
+    tcg!>action>quinten>you have 5 mana left>
+
 ...
 ```
 
+## Have fun!

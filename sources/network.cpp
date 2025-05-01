@@ -109,7 +109,7 @@ void network::safe_receive( std::vector<std::string> *message_list )
         }
 
         //error scenario
-        this->send_string( ">invalide command, try using \"tcg?>help>\" instead" );
+        this->send_string( ">no command, try using \"tcg?>help>\" instead" );
     }
     
 

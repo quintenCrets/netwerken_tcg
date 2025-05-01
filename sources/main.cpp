@@ -20,6 +20,7 @@
 int main( void )
 {
     runtime service_application;
+    service_application.init();
     service_application.run();
 
     return 0;

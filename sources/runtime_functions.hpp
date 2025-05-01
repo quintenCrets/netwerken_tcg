@@ -10,6 +10,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <map>
 #include "file_functions/file_names.hpp"
 #include "network.hpp"
 #include "player.hpp"
@@ -17,31 +18,28 @@
 class runtime
 {
     private:
-        typedef enum GENERAL_COMMAND_STATES
+        typedef enum USER_COMMANDS_RETURN_STATES
         {
-            NO_COMMAND_STATE,
+            ACTION_STATE,
             LOGIN_STATE,
             SIGNUP_STATE,
             HELP_STATE,
             ERROR_STATE
-        } GENERAL_COMMAND_STATES;
+        } USER_COMMANDS_RETURN_STATES;
         
         file_names *card_files;
-        file_names *all_player_files;
         network *benthernet;
-        std::vector<player *> all_active_players;
+        std::map<std::string, player *> all_active_players;
 
-        GENERAL_COMMAND_STATES handle_general_commands();
-        void handle_user_commands();
-        void login_check( std::string username_to_check );
+        USER_COMMANDS_RETURN_STATES get_and_handle_user_command();
         void new_signup( std::string user_name_to_add );
-        bool user_name_exists( std::string user_name );
         bool user_already_active( std::string user_name_to_check );
-    public:    
+    public:
         runtime() {};
         ~runtime();
 
         void run();
+        void init();
 };
 
 #endif
