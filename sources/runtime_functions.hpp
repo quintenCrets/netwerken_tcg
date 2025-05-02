@@ -21,7 +21,6 @@ class runtime
         typedef enum USER_COMMANDS_RETURN_STATES
         {
             ACTION_STATE,
-            LOGIN_STATE,
             SIGNUP_STATE,
             HELP_STATE,
             ERROR_STATE
@@ -31,9 +30,10 @@ class runtime
         network *benthernet;
         std::map<std::string, player *> all_active_players;
 
-        USER_COMMANDS_RETURN_STATES get_and_handle_user_command();
-        void new_signup( std::string user_name_to_add );
-        bool user_already_active( std::string user_name_to_check );
+        USER_COMMANDS_RETURN_STATES get_user_command();
+        void new_signup( std::string username_to_add );
+        bool username_check( std::string username_to_check );
+        void do_user_action( std::string username, std::string user_action );
     public:
         runtime() {};
         ~runtime();

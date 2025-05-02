@@ -49,9 +49,7 @@ void network::send_list( std::vector<std::string> message_list )
         send_data += '>' + data; //append all the data
     }
 
-    #if DEBUG
-        std::cout << "send data: " << send_data << "\n\r";
-    #endif
+    std::cout << "send data: tcg!>" << send_data << "\n\r";
     
     send_string( send_data ); //actualy send the message
 }
@@ -65,22 +63,17 @@ void network::basic_receive( std::string *message )
 {
     zmq::message_t received_data( 1024 ); //set buffer size of 1024
 
-    #if DEBUG
-        std::cout << "waiting\n\r";
-    #endif
-
+    std::cout << "waiting\n\r";
 
     this->subscriber.recv( received_data );
-    
+
     #if DEBUG
         std::cout << "data received\n\r";
     #endif
 
     *message = received_data.to_string();
     
-    #if DEBUG
-        std::cout << "received message: " << *message << "\n\r";
-    #endif
+    std::cout << "received message: " << *message << "\n\r";
 }
 
 //discription:  waits for the subscribed message to be received and tokenizes it

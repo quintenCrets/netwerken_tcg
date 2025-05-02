@@ -25,8 +25,8 @@ All messages used by the service and the clients are constructed the same way, a
 ```
 - benternet token>
 - general command token>
-- ( username token / extra token )>
-- ( action token / response )>
+- username token>
+- action token >
 
 examples:
     "tcg?>action>quinten>get max mana>"
