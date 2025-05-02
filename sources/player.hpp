@@ -15,15 +15,20 @@
 class player
 {
     private:
-        const std::string user_name;
+        const std::string username;
         json::jobject player_variables;
         
     public:
-        player( const std::string user_name );
+        player( const std::string username );
         ~player() {};
 
-        std::string get_user_name() { return this->user_name; }
+        std::string get_user_name() { return this->username; }
+        void write_user_variables();
+
+        //user command functions
         int get_mana_count();
+        int get_max_mana();
+        int gather_mana();
 };
 
 #endif

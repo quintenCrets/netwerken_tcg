@@ -215,6 +215,23 @@ void runtime::do_user_action( std::string username, std::string user_action )
     {
         benthernet->tokenized_send_data.push_back( "you currentrly have " + std::to_string( all_active_players.at( username )->get_mana_count() ) + " mana" );
     }
+    else if ( user_action == "get max mana" )
+    {
+        benthernet->tokenized_send_data.push_back( "you can hold a maximum of " + std::to_string( all_active_players.at( username )->get_max_mana() ) + " mana" );
+    }
+    else if ( user_action == "gather mana" )
+    {
+        int max_mana = all_active_players.at( username )->get_mana_count();
+        int new_mana_count = all_active_players.at( username )->gather_mana();
+        if ( max_mana == new_mana_count )
+        {
+            benthernet->tokenized_send_data.push_back( "you are at your max mana count of " + std::to_string( max_mana ) + " mana" );
+        }
+        else
+        {
+            benthernet->tokenized_send_data.push_back( "you now have a new mana count of " + std::to_string( new_mana_count ) + " mana" );
+        }
+    }
     else
     {
         benthernet->tokenized_send_data.push_back( "invalid action" );
