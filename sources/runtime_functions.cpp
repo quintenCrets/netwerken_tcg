@@ -4,7 +4,7 @@
 
 void runtime::init()
 {
-    #if DEBUG
+    #if DEBUG_GENERAL
         std::cout << "start init\n\r";
     #endif
 
@@ -24,8 +24,10 @@ void runtime::init()
         all_active_players.insert( std::pair<std::string, player *>( name, p ) );
     }
 
-    #if DEBUG
-        std::cout << "start done\n\r";
+    srand( time( nullptr ) );
+
+    #if DEBUG_GENERAL
+        std::cout << "init done\n\r";
     #endif
 }
 
@@ -36,7 +38,7 @@ void runtime::run()
         //get data
         benthernet->wait_for_tokenized_receive_data();
 
-        #if DEBUG
+        #if DEBUG_GENERAL
             for ( std::string s : benthernet->tokenized_receive_data )
                 std::cout << "received tokens: " << s << "\n\r";
         #endif
@@ -44,57 +46,22 @@ void runtime::run()
         //handle received data
         USER_COMMANDS_RETURN_STATES user_commands_return_state = get_user_command();
 
-        int user_command_count = benthernet->tokenized_receive_data.size();
-        std::string username("");
-        std::string action("");
-
         //handle user command
-
-        //in case no extra data needs to be checked
-        if ( user_command_count == 1 )
+        switch ( benthernet->tokenized_receive_data.size() )
         {
-            switch ( user_commands_return_state )
-            {
-                case HELP_STATE:
-                    //TODO: help function
-                    break;
-                default:
-                    user_commands_return_state = ERROR_STATE;
-                    break;
-            }
-        }
-
-        //in case username token needs to be checked
-        if ( user_command_count == 2 )
-        {
-            username = benthernet->tokenized_receive_data.at(1);
-
-            switch ( user_commands_return_state )
-            {
-                case SIGNUP_STATE:
-                    break;
-                default:
-                    user_commands_return_state = ERROR_STATE;
-                    break;
-            }
-        }
-
-        if ( user_command_count == 3 )
-        {
-            username = benthernet->tokenized_receive_data.at(1);
-            action = benthernet->tokenized_receive_data.at(2);
-
-            benthernet->tokenized_send_data.push_back( username );
-            
-            switch ( user_commands_return_state )
-            {
-                case ACTION_STATE:
-                    if ( username_check( username ) ) do_user_action( username, action );
-                    break;
-                default:
-                    user_commands_return_state = ERROR_STATE;
-                    break;
-            }
+            case 1:
+                check_command_1( &user_commands_return_state );
+                break;
+            case 2:
+                check_command_2( &user_commands_return_state );
+                break;
+            case 3:
+            case 4:
+                check_command_3_or_more( &user_commands_return_state );
+                break;
+            default:
+                user_commands_return_state = ERROR_STATE;
+                break;
         }
 
         //if any error got detected
@@ -112,16 +79,62 @@ void runtime::run()
     std::cout << "disconnect from benthernet\n\r";
 }
 
+void runtime::check_command_1( runtime::USER_COMMANDS_RETURN_STATES *user_commands_return_state )
+{
+    switch ( *user_commands_return_state )
+    {
+        case HELP_STATE:
+            //TODO: help function
+            break;
+        default:
+            *user_commands_return_state = ERROR_STATE;
+            break;
+    }
+}
+
+void runtime::check_command_2( runtime::USER_COMMANDS_RETURN_STATES *user_commands_return_state )
+{
+    std::string username = benthernet->tokenized_receive_data.at(1);
+
+    switch ( *user_commands_return_state )
+    {
+        case SIGNUP_STATE:
+            new_signup( username );
+            break;
+        default:
+            *user_commands_return_state = ERROR_STATE;
+            break;
+    }
+}
+
+void runtime::check_command_3_or_more( runtime::USER_COMMANDS_RETURN_STATES *user_commands_return_state )
+{
+    std::string username = benthernet->tokenized_receive_data.at(1);
+    std::string action = benthernet->tokenized_receive_data.at(2);
+
+    benthernet->tokenized_send_data.push_back( username );
+
+    switch ( *user_commands_return_state )
+    {
+        case ACTION_STATE:
+            if ( username_check( username ) ) do_user_action( username, action );
+            break;
+        default:
+            *user_commands_return_state = ERROR_STATE;
+            break;
+    }
+}
+
 runtime::~runtime()
 {
     for ( std::pair<std::string, player *> p : all_active_players )
     {
         delete p.second;
-    }
+    }    
 
     delete card_files;
     delete benthernet;
-}
+}    
 
 runtime::USER_COMMANDS_RETURN_STATES runtime::get_user_command()
 {
@@ -132,14 +145,15 @@ runtime::USER_COMMANDS_RETURN_STATES runtime::get_user_command()
     {
         case 0:
             return HELP_STATE;
-        case 3:
+        case 4:
+        case 3:    
         case 2:
         case 1:
             general_command = benthernet->tokenized_receive_data.at( 0 );
             break;
-        default:
+        default:    
             return ERROR_STATE;
-    }
+    }        
 
     benthernet->tokenized_send_data.push_back( general_command );
 
@@ -147,25 +161,25 @@ runtime::USER_COMMANDS_RETURN_STATES runtime::get_user_command()
     if ( general_command == "help" )
     {
         return HELP_STATE;
-    }
+    }    
     else if ( general_command == "signup" )
     {
         return SIGNUP_STATE;
-    }
+    }    
     else if ( general_command == "action" )
     {
         return ACTION_STATE;
-    }
+    }    
     else
     {
         return ERROR_STATE;
-    }
-}
+    }    
+}    
 
 bool runtime::username_check( std::string username_to_check )
 {
     return ( all_active_players.find( username_to_check ) == all_active_players.end() ) ? false : true;
-}
+}    
 
 void runtime::new_signup( std::string username_to_add )
 {
@@ -176,7 +190,7 @@ void runtime::new_signup( std::string username_to_add )
     {
         benthernet->tokenized_send_data.push_back( "username already exists" );
         return;
-    }
+    }    
 
     //copy base file into the new user file
     std::ofstream new_user_file( "files\\players\\" + username_to_add + ".json" );
@@ -186,7 +200,7 @@ void runtime::new_signup( std::string username_to_add )
     while ( std::getline( base_user_file, red_line ) )
     {
         new_user_file << red_line << "\n";
-    }
+    }    
 
     //cleanup
     new_user_file.close();
@@ -198,12 +212,12 @@ void runtime::new_signup( std::string username_to_add )
     if ( username_check( username_to_add ) )
     {
         benthernet->tokenized_send_data.push_back( "succesfull signup" );
-    }
+    }    
     else
     {
         benthernet->tokenized_send_data.push_back( "unexpected error" );
-    }
-}
+    }    
+}    
 
 void runtime::do_user_action( std::string username, std::string user_action )
 {
@@ -214,11 +228,11 @@ void runtime::do_user_action( std::string username, std::string user_action )
     if ( user_action == "get mana count" )
     {
         benthernet->tokenized_send_data.push_back( "you currentrly have " + std::to_string( all_active_players.at( username )->get_mana_count() ) + " mana" );
-    }
+    }    
     else if ( user_action == "get max mana" )
     {
         benthernet->tokenized_send_data.push_back( "you can hold a maximum of " + std::to_string( all_active_players.at( username )->get_max_mana() ) + " mana" );
-    }
+    }    
     else if ( user_action == "gather mana" )
     {
         int max_mana = all_active_players.at( username )->get_mana_count();
@@ -226,14 +240,19 @@ void runtime::do_user_action( std::string username, std::string user_action )
         if ( max_mana == new_mana_count )
         {
             benthernet->tokenized_send_data.push_back( "you are at your max mana count of " + std::to_string( max_mana ) + " mana" );
-        }
+        }    
         else
         {
             benthernet->tokenized_send_data.push_back( "you now have a new mana count of " + std::to_string( new_mana_count ) + " mana" );
-        }
+        }    
+    }
+    else if ( user_action == "search card" )
+    {
+        all_active_players.at( username )->search_card( card_files );
     }
     else
     {
         benthernet->tokenized_send_data.push_back( "invalid action" );
-    }
-}
+    }    
+}    
+

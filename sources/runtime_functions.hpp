@@ -11,6 +11,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <cstdlib>
 #include "file_functions/file_names.hpp"
 #include "network.hpp"
 #include "player.hpp"
@@ -31,6 +32,9 @@ class runtime
         std::map<std::string, player *> all_active_players;
 
         USER_COMMANDS_RETURN_STATES get_user_command();
+        void check_command_1( USER_COMMANDS_RETURN_STATES *user_commands_return_state );
+        void check_command_2( USER_COMMANDS_RETURN_STATES *user_commands_return_state );
+        void check_command_3_or_more( USER_COMMANDS_RETURN_STATES *user_commands_return_state );
         void new_signup( std::string username_to_add );
         bool username_check( std::string username_to_check );
         void do_user_action( std::string username, std::string user_action );

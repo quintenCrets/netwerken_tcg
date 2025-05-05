@@ -4,12 +4,6 @@
 
 #include "file_names.hpp"
 
-//constructor / destructor defenitions
-
-//discription:  constructor defenition
-//
-//arguments:    file_extension, the file extension to filter
-//              location, the relative directory with all the files to be search
 file_names::file_names( std::string file_extension, std::string location)
 {
     this->file_extension = file_extension;
@@ -17,13 +11,6 @@ file_names::file_names( std::string file_extension, std::string location)
     update_all_file_names(); //set all_file_names for the first time
 }
 
-//class function defenitions
-
-//discription:  loops over all files pressent in a directory
-//              and stores the name if the extension matches
-//              with the extension given in the constructor
-//
-//arguments:    void
 void file_names::update_all_file_names()
 {
     //make sure no previous data is present
@@ -39,14 +26,11 @@ void file_names::update_all_file_names()
         }
     }
 
-    #if DEBUG
+    #if DEBUG_GENERAL
         std::cout << "Found " << this->all_file_names.size() << " " << this->file_extension << " files.\n\r";
     #endif
 }
 
-//discription:  prints out all the files found in the directory
-//
-//arguments:    void
 void file_names::print_all_file_names()
 {
     for ( std::string name : this->all_file_names )
@@ -55,9 +39,11 @@ void file_names::print_all_file_names()
     }
 }
 
-//discription:  returns the string vector containing all the file names pressent
-//
-//arguments:    all_file_names: a pointer to the object where to store all the file names
+std::string file_names::get_random_file_name()
+{
+    return all_file_names.at( rand() % all_file_names.size() );
+}
+
 void file_names::get_all_file_names( std::vector<std::string> *all_file_names )
 {
     //make sure no pre-existing data is pressent
@@ -69,3 +55,4 @@ void file_names::get_all_file_names( std::vector<std::string> *all_file_names )
         all_file_names->push_back( name );
     }
 }
+

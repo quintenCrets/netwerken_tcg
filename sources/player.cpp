@@ -17,12 +17,14 @@ player::player( const std::string username ) : username(username)
     }
     player_file.close();
     
-    #if DEBUG
-        std::cout << file_content << "\n\r";
+    #if DEBUG_GENERAL
+        std::cout << file_content << "\"\n\r";
     #endif
 
     //parse player file
+    std::cout << "test\n\r";
     player_variables = json::jobject::parse( file_content );
+    std::cout << "test\n\r";
 }
 
 int player::get_mana_count()
@@ -42,15 +44,43 @@ int player::gather_mana()
     if ( new_mana_count > get_max_mana() ) return get_mana_count();
 
     this->player_variables["mana_count"] = new_mana_count;
-    write_user_variables();
+    write_player_variables();
     
     return new_mana_count;
 }
-void player::write_user_variables()
+
+int player::search_card( file_names *card_files )
 {
+    int new_mana_count = get_mana_count() - 3;
+
+    if ( new_mana_count < 0 ) return get_mana_count();
+
+    this->player_variables["mana_count"] = new_mana_count;
+    std::vector<json::jobject> temp;
+    temp.push_back( json::jobject::parse( this->player_variables["cards"].array(0).as_string() ) );
+    std::string new_card = card_files->get_random_file_name();
+    int new_count_of_card = std::stoi( temp.at( 0 )[ new_card ] ) + 1;
+    temp.at( 0 )[ new_card ] = new_count_of_card;
+     this->player_variables["cards"] = temp;
+
+    #if DEBUG_GENERAL
+        std::cout << "got new card: \"" << new_card << "\" new count " << std::to_string( new_count_of_card ) << "\n\r";
+    #endif
+    
+    write_player_variables();
+
+    return new_mana_count;
+}
+
+void player::write_player_variables()
+{
+    #if DEBUG_GENERAL
+        std::cout << (std::string)this->player_variables.pretty( 0 ) << "\n\r";
+    #endif
+
     std::ofstream user_file( "files\\players\\" + this->username + ".json" );
     user_file.clear();
-    user_file << (std::string)this->player_variables.pretty( 1 );
+    user_file << ( std::string)this->player_variables.pretty( 0 );
     user_file.close();
 }
 

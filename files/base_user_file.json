@@ -1,5 +1,11 @@
 {
-    "mana_count":5,
-    "max_mana":10,
-    "cards":{}
+    "mana_count": 5,
+    "max_mana": 10,
+    "cards": [
+        {
+            "mummie": 0,
+            "skeleton": 0,
+            "zombie": 0
+        }
+    ]
 }

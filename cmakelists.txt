@@ -3,7 +3,7 @@ set( cmake_cxx_standard_required 17 )
 project( tcg_testing )
 
 add_compile_definitions(
-	DEBUG=false
+	DEBUG_GENERAL=true
 	ZMQ_STATIC
 )
 

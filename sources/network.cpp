@@ -67,7 +67,7 @@ void network::basic_receive( std::string *message )
 
     this->subscriber.recv( received_data );
 
-    #if DEBUG
+    #if DEBUG_GENERAL
         std::cout << "data received\n\r";
     #endif
 
@@ -106,7 +106,7 @@ void network::safe_receive( std::vector<std::string> *message_list )
     }
     
 
-    #if DEBUG
+    #if DEBUG_GENERAL
         for( int i = 0; i < message_list->size(); ++i )
             std::cout << "tok " << std::dec << i << ": " << message_list->at( i ) << "\n\r";
     #endif

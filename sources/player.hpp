@@ -11,6 +11,7 @@
 #include <vector>
 #include <string>
 #include "file_functions/json.h"
+#include "file_functions/file_names.hpp"
 
 class player
 {
@@ -23,12 +24,13 @@ class player
         ~player() {};
 
         std::string get_user_name() { return this->username; }
-        void write_user_variables();
+        void write_player_variables();
 
         //user command functions
         int get_mana_count();
         int get_max_mana();
         int gather_mana();
+        int search_card( file_names *card_files );
 };
 
 #endif
