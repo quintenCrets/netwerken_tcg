@@ -49,26 +49,25 @@ int player::gather_mana()
     return new_mana_count;
 }
 
-int player::search_card( file_names *card_files )
+int player::search_card( file_names *card_files, std::string *new_card, int *new_card_count )
 {
     int new_mana_count = get_mana_count() - 3;
-
     if ( new_mana_count < 0 ) return get_mana_count();
-
     this->player_variables["mana_count"] = new_mana_count;
+
+    //write data to the nested "cards" object
     std::vector<json::jobject> temp;
-    temp.push_back( json::jobject::parse( this->player_variables["cards"].array(0).as_string() ) );
-    std::string new_card = card_files->get_random_file_name();
-    int new_count_of_card = std::stoi( temp.at( 0 )[ new_card ] ) + 1;
-    temp.at( 0 )[ new_card ] = new_count_of_card;
-     this->player_variables["cards"] = temp;
+    temp.push_back( this->player_variables["cards"].array(0).as_object() );
+    *new_card = card_files->get_random_file_name();
+    *new_card_count = std::stoi( temp.at( 0 )[ *new_card ] ) + 1;
+    temp.at( 0 )[ *new_card ] = *new_card_count;
+    this->player_variables["cards"] = temp;
 
     #if DEBUG_GENERAL
-        std::cout << "got new card: \"" << new_card << "\" new count " << std::to_string( new_count_of_card ) << "\n\r";
+        std::cout << "got new card: \"" << *new_card << "\" new count " << std::to_string( *new_card_count ) << "\n\r";
     #endif
     
     write_player_variables();
-
     return new_mana_count;
 }
 

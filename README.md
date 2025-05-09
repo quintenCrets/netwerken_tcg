@@ -87,7 +87,46 @@ If an invalid username is used, for example the user is called "quinten" but tri
 
 ## Flow chart
 
-TODO
+<div hidden>
+@startuml
+!pragma teoz true
+participant client       order 1
+participant benthernet   order 2
+participant service      order 3
+participant os           order 4
+
+== service init ==
+
+service -> service            : general init
+service -> os                 : read
+os -> service                 : json data
+service -> service            : json data based init
+service -> benthernet         : connect to benthernet
+
+== init done ==
+
+client --> benthernet         : "benthernet token">"general command token">"username">"action">
+{start} benthernet -> service : "benthernet token">"general command token">"username">"action">
+service -> service            : check returns true
+service -> service            : change variables / read variables
+[<--> benthernet        : "other messages"
+service -> os                 : write data
+{end} service -> benthernet   : tcg!>...
+{start} <-> {end}             : multiple options based on \nthe message received
+[<--> benthernet              : "other messages"
+client <-- benthernet               : tcg!>...
+== ==
+client --> benthernet         : "benthernet token">"invalid message"
+benthernet -> service         : "invalid message"
+service ->x service           : check returns false
+service -> benthernet         : "error response"
+client <-- benthernet         : "error response"
+
+== service close down ==
+@enduml
+</div>
+
+![flowchart](./flowchart.png)
 
 ## Examples
 

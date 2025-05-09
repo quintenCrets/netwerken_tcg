@@ -30,7 +30,7 @@ class player
         int get_mana_count();
         int get_max_mana();
         int gather_mana();
-        int search_card( file_names *card_files );
+        int search_card( file_names *card_files, std::string *new_card, int *new_card_count );
 };
 
 #endif

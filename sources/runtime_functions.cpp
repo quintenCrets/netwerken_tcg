@@ -235,7 +235,7 @@ void runtime::do_user_action( std::string username, std::string user_action )
     }    
     else if ( user_action == "gather mana" )
     {
-        int max_mana = all_active_players.at( username )->get_mana_count();
+        int max_mana = all_active_players.at( username )->get_max_mana();
         int new_mana_count = all_active_players.at( username )->gather_mana();
         if ( max_mana == new_mana_count )
         {
@@ -248,7 +248,19 @@ void runtime::do_user_action( std::string username, std::string user_action )
     }
     else if ( user_action == "search card" )
     {
-        all_active_players.at( username )->search_card( card_files );
+        std::string new_card;
+        int new_card_count;
+        int mana_count = all_active_players.at( username )->get_mana_count();
+        
+        if ( mana_count < 3 )
+        {
+            benthernet->tokenized_send_data.push_back( "you only have " + std::to_string( mana_count ) + " mana, you should have at least 3 . . ." );
+        }
+        else
+        {
+            mana_count = all_active_players.at( username )->search_card( card_files, &new_card, &new_card_count );
+            benthernet->tokenized_send_data.push_back( "you found a " + new_card + " card! you now have " + std::to_string( new_card_count ) + " of these cards . . ." );
+        }
     }
     else
     {
