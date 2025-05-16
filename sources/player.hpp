@@ -29,7 +29,7 @@ class player
         //user command functions
         int get_mana_count();
         int get_max_mana();
-        int gather_mana();
+        int gather_mana( int amount );
         int search_card( file_names *card_files, std::string *new_card, int *new_card_count );
 };
 

@@ -111,13 +111,14 @@ void runtime::check_command_3_or_more( runtime::USER_COMMANDS_RETURN_STATES *use
 {
     std::string username = benthernet->tokenized_receive_data.at(1);
     std::string action = benthernet->tokenized_receive_data.at(2);
+    std::string extra = benthernet->tokenized_receive_data.size() >= 4 ? benthernet->tokenized_receive_data.at(3) : "";
 
     benthernet->tokenized_send_data.push_back( username );
 
     switch ( *user_commands_return_state )
     {
         case ACTION_STATE:
-            if ( username_check( username ) ) do_user_action( username, action );
+            if ( username_check( username ) ) do_user_action( username, action, extra );
             break;
         default:
             *user_commands_return_state = ERROR_STATE;
@@ -219,7 +220,7 @@ void runtime::new_signup( std::string username_to_add )
     }    
 }    
 
-void runtime::do_user_action( std::string username, std::string user_action )
+void runtime::do_user_action( std::string username, std::string user_action, std::string extra )
 {
     //check for valid username
     benthernet->tokenized_receive_data.push_back( username );
@@ -235,8 +236,18 @@ void runtime::do_user_action( std::string username, std::string user_action )
     }    
     else if ( user_action == "gather mana" )
     {
+        int amount_of_mana_to_add = 0;
+        if ( extra == "" )
+        {
+            amount_of_mana_to_add = 1;
+        }
+        else if ( extra.at( 0 ) >= '1' && extra.at( 0 ) <= '9' );
+        {
+            amount_of_mana_to_add = extra.at( 0 ) - '0';
+        }
+        
         int max_mana = all_active_players.at( username )->get_max_mana();
-        int new_mana_count = all_active_players.at( username )->gather_mana();
+        int new_mana_count = all_active_players.at( username )->gather_mana( amount_of_mana_to_add );
         if ( max_mana == new_mana_count )
         {
             benthernet->tokenized_send_data.push_back( "you are at your max mana count of " + std::to_string( max_mana ) + " mana" );

@@ -37,9 +37,9 @@ int player::get_max_mana()
     return stoi( this->player_variables.get( "max_mana" ) );
 }
 
-int player::gather_mana()
+int player::gather_mana( int amount )
 {
-    int new_mana_count = get_mana_count() + 1;
+    int new_mana_count = get_mana_count() + amount;
     
     if ( new_mana_count > get_max_mana() ) return get_mana_count();
 

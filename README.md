@@ -73,9 +73,9 @@ Most of the commands however are user specific. After the username is inputted t
 list of all possible extra tokens:
     - get mana count        get a players mana count
     - get max mana          get the maximum amount of mana a player can have
-    - gather mana           gather more mana if possible
+    - gather mana>(count)   gather more mana if possible
     - search card           use mana to search for a new card
-    - play card>(name)      use mana the card named in the next token
+    - play card>(name)      use mana to play a card
     - list cards            gives a list of all cards a player has
 
 examples:
