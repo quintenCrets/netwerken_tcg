@@ -35,6 +35,8 @@ class runtime
         void check_command_1( USER_COMMANDS_RETURN_STATES *user_commands_return_state );
         void check_command_2( USER_COMMANDS_RETURN_STATES *user_commands_return_state );
         void check_command_3_or_more( USER_COMMANDS_RETURN_STATES *user_commands_return_state );
+
+        void send_help();
         void new_signup( std::string username_to_add );
         bool username_check( std::string username_to_check );
         void do_user_action( std::string username, std::string user_action, std::string extra );

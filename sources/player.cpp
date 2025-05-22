@@ -22,9 +22,7 @@ player::player( const std::string username ) : username(username)
     #endif
 
     //parse player file
-    std::cout << "test\n\r";
     player_variables = json::jobject::parse( file_content );
-    std::cout << "test\n\r";
 }
 
 int player::get_mana_count()

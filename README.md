@@ -55,7 +55,6 @@ Listed below is a list of all the possible general command token's ( this is the
 list  of all general command tokens:
     - signup>   used to register a new account
     - action>   used to perform a player specific action
-    - list>     lists all active players
     - help>     prints out a helpfull quick start in game
 ```
 
@@ -75,8 +74,6 @@ list of all possible extra tokens:
     - get max mana          get the maximum amount of mana a player can have
     - gather mana>(count)   gather more mana if possible
     - search card           use mana to search for a new card
-    - play card>(name)      use mana to play a card
-    - list cards            gives a list of all cards a player has
 
 examples:
     "tcg?>action>quinten>get max mana>"

@@ -84,7 +84,7 @@ void runtime::check_command_1( runtime::USER_COMMANDS_RETURN_STATES *user_comman
     switch ( *user_commands_return_state )
     {
         case HELP_STATE:
-            //TODO: help function
+            send_help();
             break;
         default:
             *user_commands_return_state = ERROR_STATE;
@@ -126,6 +126,11 @@ void runtime::check_command_3_or_more( runtime::USER_COMMANDS_RETURN_STATES *use
     }
 }
 
+void runtime::send_help()
+{
+    benthernet->tokenized_send_data.push_back( "\n\n   general message construction:\n\n   \"benthernet token\">\"general command token\">\"username token\">\"action token\">\n\n   \"benthernet token\" = \"tcg?\"\n   examples:\n    \"tcg?>action>quinten>get max mana>\"\n    \"tcg!>signup>quinten>succesfully signed up>\"\n    \"tcg?>help>\"\n\n   list of general commands:\n\n   list  of all general command tokens:\n   - signup>   used to register a new account\n   - action>   used to perform a player specific action\n   - help>     prints out a helpfull quick start in game\n\n   list of action tokens:\n\n   - action>(username)>(extra)>\n\n   list of all possible extra tokens:\n   - get mana count        get a players mana count\n   - get max mana          get the maximum amount of mana a player can have\n   - gather mana>(count)   gather more mana if possible\n   - search card           use mana to search for a new card\n\n   examples:\n    \"tcg?>action>quinten>get max mana>\"\n    \"tcg?>action>quinten>search card>\"\n");
+}
+
 runtime::~runtime()
 {
     for ( std::pair<std::string, player *> p : all_active_players )
@@ -135,7 +140,7 @@ runtime::~runtime()
 
     delete card_files;
     delete benthernet;
-}    
+}
 
 runtime::USER_COMMANDS_RETURN_STATES runtime::get_user_command()
 {
@@ -236,12 +241,8 @@ void runtime::do_user_action( std::string username, std::string user_action, std
     }    
     else if ( user_action == "gather mana" )
     {
-        int amount_of_mana_to_add = 0;
-        if ( extra == "" )
-        {
-            amount_of_mana_to_add = 1;
-        }
-        else if ( extra.at( 0 ) >= '1' && extra.at( 0 ) <= '9' );
+        int amount_of_mana_to_add = 1;
+        if ( extra.at( 0 ) >= '1' && extra.at( 0 ) <= '9' );
         {
             amount_of_mana_to_add = extra.at( 0 ) - '0';
         }
